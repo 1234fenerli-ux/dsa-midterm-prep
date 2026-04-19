@@ -1,309 +1,446 @@
-// ---------- TOPIC CONTENT ----------
-const topics = [
+const studyLessons = [
   {
-    title: "Lesson 1 - Algorithms and Data Structures",
-    content: "Algorithms are step-by-step procedures for solving problems. Data structures organize and store data efficiently."
+    lesson: "Lesson 1",
+    title: "What is an Algorithm?",
+    points: [
+      "An algorithm is a finite and clear sequence of steps.",
+      "It is used to solve a problem.",
+      "It has input, process, and output.",
+      "Correctness and finiteness are essential properties."
+    ]
   },
   {
-    title: "Lesson 1 - Abstract Data Types",
-    content: "An ADT defines operations and behavior, but not the implementation details."
+    lesson: "Lesson 1",
+    title: "What is a Data Structure?",
+    points: [
+      "A data structure is a way of organizing and storing data.",
+      "It improves access, insertion, deletion, and traversal efficiency.",
+      "Different problems require different structures.",
+      "It strongly affects performance."
+    ]
   },
   {
-    title: "Lesson 1 - Arrays",
-    content: "Arrays use contiguous memory and provide fast random access."
+    lesson: "Lesson 1",
+    title: "Abstract Data Type (ADT)",
+    points: [
+      "An ADT defines behavior and operations.",
+      "It does not define implementation details.",
+      "It separates interface from implementation.",
+      "Stack and queue are classic ADT examples."
+    ]
   },
   {
-    title: "Lesson 1 - Linked Lists",
-    content: "Linked lists store data in nodes connected by references."
+    lesson: "Lesson 1",
+    title: "Arrays",
+    points: [
+      "Arrays use contiguous memory.",
+      "Indexed access is fast, usually O(1).",
+      "Middle insertion and deletion can be expensive.",
+      "Shifting elements may be required."
+    ]
   },
   {
-    title: "Lesson 2 - Time Complexity",
-    content: "Time complexity describes how runtime grows as input size increases."
+    lesson: "Lesson 1",
+    title: "Linked Lists",
+    points: [
+      "Linked lists are made of nodes connected by references.",
+      "They do not require contiguous memory.",
+      "Direct indexed access is weak.",
+      "Insertion and deletion can be flexible when the position is known."
+    ]
   },
   {
-    title: "Lesson 2 - Space Complexity",
-    content: "Space complexity describes how memory usage grows with input size."
+    lesson: "Lesson 1",
+    title: "Array vs Linked List",
+    points: [
+      "Arrays are strong at direct indexed access.",
+      "Linked lists are flexible for structural updates.",
+      "Arrays use contiguous memory; linked lists use nodes and pointers.",
+      "Each has different performance trade-offs."
+    ]
   },
   {
-    title: "Lesson 2 - Big-O, Omega, Theta",
-    content: "Big-O is an upper bound, Omega is a lower bound, and Theta is a tight bound."
+    lesson: "Lesson 2",
+    title: "Why Analyze Algorithms?",
+    points: [
+      "A correct algorithm may still be too slow.",
+      "Analysis helps compare different solutions.",
+      "It focuses on resource usage as input grows.",
+      "Time and space are the main concerns."
+    ]
   },
   {
-    title: "Lesson 3 - Stacks",
-    content: "Stacks follow LIFO. Main operations are push, pop, and top."
+    lesson: "Lesson 2",
+    title: "Time Complexity",
+    points: [
+      "Time complexity describes runtime growth.",
+      "It depends on input size.",
+      "Exact seconds are less important than growth rate.",
+      "Big-O is commonly used for this analysis."
+    ]
   },
   {
-    title: "Lesson 3 - Queues",
-    content: "Queues follow FIFO. Main operations are enqueue, dequeue, and front."
+    lesson: "Lesson 2",
+    title: "Space Complexity",
+    points: [
+      "Space complexity describes memory growth.",
+      "It includes extra memory used by the algorithm.",
+      "An algorithm may be fast but memory-heavy.",
+      "Time-space trade-offs are common."
+    ]
   },
   {
-    title: "Lesson 3 - Circular Queue",
-    content: "Circular queues reuse empty spaces efficiently in array-based implementations."
+    lesson: "Lesson 2",
+    title: "Big-O, Big-Omega, Big-Theta",
+    points: [
+      "Big-O is an upper bound.",
+      "Big-Omega is a lower bound.",
+      "Big-Theta is a tight bound.",
+      "These are asymptotic notations."
+    ]
+  },
+  {
+    lesson: "Lesson 2",
+    title: "Growth Rates",
+    points: [
+      "O(1) grows slower than O(log n).",
+      "O(log n) grows slower than O(n).",
+      "O(n) grows slower than O(n^2).",
+      "Growth-rate comparison is a common exam topic."
+    ]
+  },
+  {
+    lesson: "Lesson 3",
+    title: "Stacks",
+    points: [
+      "A stack is a linear structure.",
+      "It follows LIFO: Last In, First Out.",
+      "Main operations are push, pop, and top.",
+      "It is used in undo/redo and function calls."
+    ]
+  },
+  {
+    lesson: "Lesson 3",
+    title: "Queues",
+    points: [
+      "A queue is a linear structure.",
+      "It follows FIFO: First In, First Out.",
+      "Main operations are enqueue, dequeue/pop, and front.",
+      "It is used in scheduling and waiting-line systems."
+    ]
+  },
+  {
+    lesson: "Lesson 3",
+    title: "Circular Queue",
+    points: [
+      "A circular queue is useful in array-based implementations.",
+      "It wraps around instead of wasting free positions.",
+      "It improves space efficiency.",
+      "Front and rear move circularly."
+    ]
   }
 ];
 
-// ---------- FLASHCARDS ----------
-const flashcards = [
-  { front: "Algorithm", back: "A finite sequence of steps to solve a problem" },
-  { front: "Data Structure", back: "A way to organize and store data efficiently" },
-  { front: "ADT", back: "Abstract Data Type; behavior without implementation details" },
-  { front: "Array", back: "Contiguous memory structure with fast indexed access" },
-  { front: "Linked List", back: "A structure made of nodes connected by references" },
-  { front: "Big-O", back: "Upper bound, usually used for worst-case growth" },
-  { front: "Big-Omega", back: "Lower bound on asymptotic growth" },
-  { front: "Big-Theta", back: "Tight bound on asymptotic growth" },
-  { front: "Stack", back: "A LIFO data structure" },
-  { front: "Queue", back: "A FIFO data structure" },
-  { front: "LIFO", back: "Last In, First Out" },
-  { front: "FIFO", back: "First In, First Out" }
+const examCatalog = [
+  {
+    id: "mcq-all",
+    icon: "Ⓐ",
+    title: "Multiple Choice — All Lessons",
+    description: "Mixed multiple-choice practice from all lessons.",
+    count: "8+ QUESTIONS"
+  },
+  {
+    id: "mcq-1",
+    icon: "Ⓐ",
+    title: "Multiple Choice — Lesson 1",
+    description: "Algorithms, data structures, ADT, arrays, and linked lists.",
+    count: "POOL"
+  },
+  {
+    id: "mcq-2",
+    icon: "Ⓐ",
+    title: "Multiple Choice — Lesson 2",
+    description: "Complexity, analysis, asymptotic notation, and growth rates.",
+    count: "POOL"
+  },
+  {
+    id: "mcq-3",
+    icon: "Ⓐ",
+    title: "Multiple Choice — Lesson 3",
+    description: "Stacks, queues, FIFO, LIFO, and circular queue logic.",
+    count: "POOL"
+  },
+  {
+    id: "classic-all",
+    icon: "✍️",
+    title: "Classic Questions — All Lessons",
+    description: "Open-ended and comparison questions with expected key points.",
+    count: "12+ QUESTIONS"
+  },
+  {
+    id: "classic-1",
+    icon: "✍️",
+    title: "Classic Questions — Lesson 1",
+    description: "Definitions, comparisons, and structure logic.",
+    count: "POOL"
+  },
+  {
+    id: "classic-2",
+    icon: "✍️",
+    title: "Classic Questions — Lesson 2",
+    description: "Complexity logic, asymptotic notation, and comparisons.",
+    count: "POOL"
+  },
+  {
+    id: "classic-3",
+    icon: "✍️",
+    title: "Classic Questions — Lesson 3",
+    description: "Stack and queue logic, operations, and use cases.",
+    count: "POOL"
+  },
+  {
+    id: "mock-midterm",
+    icon: "🎓",
+    title: "Mock Midterm",
+    description: "Randomized exam mode: 7 classic + 3 multiple-choice questions.",
+    count: "10 QUESTIONS",
+    highlight: true
+  }
 ];
 
-// ---------- PRACTICE QUIZ POOL ----------
-const quizPool = [
+const mcqPool = [
   {
-    question: "Which data structure follows FIFO?",
-    options: ["Stack", "Queue", "Tree", "Graph"],
-    answer: "Queue",
-    explanation: "Queue follows First In First Out."
+    lesson: "Lesson 1",
+    question: "Which statement best defines an algorithm?",
+    options: [
+      "A random list of commands",
+      "A finite sequence of steps used to solve a problem",
+      "A memory address table",
+      "A type of linked node"
+    ],
+    answer: "A finite sequence of steps used to solve a problem",
+    explanation: "An algorithm is a clear and finite problem-solving procedure."
   },
   {
-    question: "Which data structure follows LIFO?",
-    options: ["Queue", "Stack", "Array", "Graph"],
-    answer: "Stack",
-    explanation: "Stack follows Last In First Out."
+    lesson: "Lesson 1",
+    question: "What is the main purpose of a data structure?",
+    options: [
+      "To decorate code",
+      "To organize and store data efficiently",
+      "To replace algorithms",
+      "To avoid memory usage"
+    ],
+    answer: "To organize and store data efficiently",
+    explanation: "Data structures help store and manage data efficiently."
   },
   {
-    question: "Which structure provides fast direct access by index?",
+    lesson: "Lesson 1",
+    question: "Which structure gives fast direct access by index?",
     options: ["Linked List", "Queue", "Array", "Stack"],
     answer: "Array",
     explanation: "Arrays provide direct indexed access."
   },
   {
-    question: "Which notation usually describes worst-case growth?",
-    options: ["Big-O", "Big-Omega", "Big-Theta", "LIFO"],
+    lesson: "Lesson 1",
+    question: "Which statement is true for linked lists?",
+    options: [
+      "They always use contiguous memory",
+      "They are made of nodes connected by references",
+      "They provide O(1) random access",
+      "They are only used as stacks"
+    ],
+    answer: "They are made of nodes connected by references",
+    explanation: "Linked lists use nodes and pointers/references."
+  },
+  {
+    lesson: "Lesson 2",
+    question: "What does time complexity describe?",
+    options: [
+      "Code style",
+      "Runtime growth as input size increases",
+      "The number of variables",
+      "Output formatting"
+    ],
+    answer: "Runtime growth as input size increases",
+    explanation: "Time complexity measures how runtime scales with input size."
+  },
+  {
+    lesson: "Lesson 2",
+    question: "Which notation is usually used for worst-case growth?",
+    options: ["Big-O", "Big-Omega", "Big-Theta", "FIFO"],
     answer: "Big-O",
     explanation: "Big-O is commonly used for worst-case analysis."
   },
   {
+    lesson: "Lesson 2",
     question: "Which notation represents a lower bound?",
-    options: ["Big-O", "Big-Omega", "Big-Theta", "FIFO"],
+    options: ["Big-O", "Big-Omega", "Big-Theta", "LIFO"],
     answer: "Big-Omega",
-    explanation: "Omega gives the lower bound."
+    explanation: "Big-Omega describes a lower bound."
   },
   {
-    question: "Which notation means both upper and lower bounds match?",
+    lesson: "Lesson 2",
+    question: "Which notation means the upper and lower bounds match?",
     options: ["Big-O", "Big-Omega", "Big-Theta", "O(1)"],
     answer: "Big-Theta",
-    explanation: "Theta represents a tight asymptotic bound."
+    explanation: "Big-Theta is a tight asymptotic bound."
   },
   {
-    question: "What is the main advantage of arrays?",
-    options: ["Easy middle insertion", "Fast direct access", "Always dynamic size", "Uses pointers"],
-    answer: "Fast direct access",
-    explanation: "Arrays are strong at indexed access."
-  },
-  {
-    question: "What is the main advantage of linked lists?",
-    options: ["Fast random access", "Flexible insertion and deletion", "Smaller memory always", "Built-in sorting"],
-    answer: "Flexible insertion and deletion",
-    explanation: "Linked lists are more flexible for structural updates."
-  },
-  {
-    question: "Which operation removes the top of a stack?",
-    options: ["push", "front", "pop", "enqueue"],
-    answer: "pop",
-    explanation: "pop removes the top item."
-  },
-  {
-    question: "Which operation adds an item to a queue?",
-    options: ["push", "enqueue", "top", "peek"],
-    answer: "enqueue",
-    explanation: "enqueue inserts at the back of a queue."
-  }
-];
-
-// ---------- TEST EXAM POOL ----------
-const testExamPool = [
-  {
-    question: "Which structure is based on nodes connected by references?",
-    options: ["Array", "Linked List", "Stack Frame", "Matrix"],
-    answer: "Linked List",
-    explanation: "Linked lists use nodes and references."
-  },
-  {
-    question: "What does time complexity describe?",
-    options: [
-      "How code looks",
-      "How runtime grows with input size",
-      "Memory address location",
-      "Data type conversion"
-    ],
-    answer: "How runtime grows with input size",
-    explanation: "Time complexity measures runtime growth."
-  },
-  {
-    question: "Which operation returns the front item of a queue without removing it?",
-    options: ["pop", "top", "front", "push"],
-    answer: "front",
-    explanation: "front returns the first element in a queue."
-  },
-  {
-    question: "What is an ADT?",
-    options: [
-      "A hardware unit",
-      "A behavior definition without implementation details",
-      "A memory address table",
-      "A type of queue only"
-    ],
-    answer: "A behavior definition without implementation details",
-    explanation: "ADT defines allowed operations and behavior."
-  },
-  {
-    question: "Why can insertion in the middle of an array be expensive?",
-    options: [
-      "Because arrays use nodes",
-      "Because elements may need to be shifted",
-      "Because arrays are always circular",
-      "Because arrays have no indices"
-    ],
-    answer: "Because elements may need to be shifted",
-    explanation: "Middle insertion often requires shifting elements."
-  },
-  {
-    question: "Which structure is best matched with LIFO?",
-    options: ["Queue", "Stack", "Array", "Linked List"],
+    lesson: "Lesson 3",
+    question: "Which structure follows LIFO?",
+    options: ["Queue", "Stack", "Array", "Graph"],
     answer: "Stack",
-    explanation: "LIFO is the defining rule of stacks."
+    explanation: "Stacks follow Last In, First Out."
   },
   {
-    question: "What is the purpose of a circular queue?",
+    lesson: "Lesson 3",
+    question: "Which structure follows FIFO?",
+    options: ["Stack", "Queue", "Tree", "Heap"],
+    answer: "Queue",
+    explanation: "Queues follow First In, First Out."
+  },
+  {
+    lesson: "Lesson 3",
+    question: "Which operation returns the front element of a queue?",
+    options: ["top", "front", "push", "popBack"],
+    answer: "front",
+    explanation: "front returns the first queue element without removing it."
+  },
+  {
+    lesson: "Lesson 3",
+    question: "Why is a circular queue useful?",
     options: [
-      "To turn FIFO into LIFO",
-      "To avoid wasting unused array positions",
-      "To replace arrays completely",
-      "To sort the queue automatically"
+      "It changes FIFO into LIFO",
+      "It avoids wasting free array positions",
+      "It removes the need for arrays",
+      "It sorts the queue automatically"
     ],
-    answer: "To avoid wasting unused array positions",
-    explanation: "Circular queues reuse array positions efficiently."
-  },
-  {
-    question: "Which complexity is generally better for large n?",
-    options: ["O(n^2)", "O(n)", "O(1)", "O(n log n)"],
-    answer: "O(1)",
-    explanation: "Constant time is the most efficient among these options."
+    answer: "It avoids wasting free array positions",
+    explanation: "Circular queues reuse open array positions efficiently."
   }
 ];
 
-// ---------- CLASSIC EXAM POOL ----------
-const classicExamPool = [
+const classicPool = [
   {
+    lesson: "Lesson 1",
     question: "Explain the difference between an algorithm and a data structure.",
     points: [
-      "Algorithm: procedure or sequence of steps",
-      "Data structure: way of organizing data",
+      "Algorithm = step-by-step solution method",
+      "Data structure = way of organizing and storing data",
       "Algorithms operate on data structures",
-      "Both affect performance and design"
+      "Both affect performance"
     ]
   },
   {
-    question: "Explain the difference between an array and a linked list.",
-    points: [
-      "Array uses contiguous memory",
-      "Linked list uses nodes and references",
-      "Array gives fast indexed access",
-      "Linked list is more flexible for insertion/deletion"
-    ]
-  },
-  {
+    lesson: "Lesson 1",
     question: "What is an Abstract Data Type (ADT)?",
     points: [
       "Defines behavior and operations",
-      "Does not define implementation details",
+      "Hides implementation details",
       "Separates interface from implementation",
-      "Examples include stack and queue"
+      "Examples: stack, queue"
     ]
   },
   {
-    question: "Explain time complexity and why it matters.",
+    lesson: "Lesson 1",
+    question: "Compare arrays and linked lists.",
     points: [
-      "Measures runtime growth",
-      "Depends on input size",
-      "Used to compare algorithms",
-      "Helps choose efficient solutions"
+      "Array uses contiguous memory",
+      "Linked list uses nodes and references",
+      "Array has fast indexed access",
+      "Linked list is flexible for insertion/deletion"
     ]
   },
   {
+    lesson: "Lesson 1",
+    question: "Why can insertion in the middle of an array be expensive?",
+    points: [
+      "Elements may need to be shifted",
+      "Contiguous layout matters",
+      "Runtime can increase with size"
+    ]
+  },
+  {
+    lesson: "Lesson 2",
+    question: "Explain why algorithm analysis is important.",
+    points: [
+      "Correct algorithms may differ in efficiency",
+      "Analysis compares solutions",
+      "Focuses on growth with input size",
+      "Time and space matter"
+    ]
+  },
+  {
+    lesson: "Lesson 2",
+    question: "Explain time complexity.",
+    points: [
+      "Describes runtime growth",
+      "Depends on input size",
+      "Used to compare efficiency",
+      "Often expressed with Big-O"
+    ]
+  },
+  {
+    lesson: "Lesson 2",
     question: "Compare Big-O, Big-Omega, and Big-Theta.",
     points: [
-      "Big-O is an upper bound",
-      "Big-Omega is a lower bound",
-      "Big-Theta is a tight bound",
-      "They describe asymptotic growth"
+      "Big-O = upper bound",
+      "Big-Omega = lower bound",
+      "Big-Theta = tight bound",
+      "All are asymptotic notations"
     ]
   },
   {
-    question: "Explain the stack data structure and its main operations.",
+    lesson: "Lesson 2",
+    question: "Rank O(1), O(log n), O(n), and O(n^2) from best to worst.",
     points: [
-      "Stack follows LIFO",
-      "push adds an element",
-      "pop removes the top element",
-      "top returns the top without removing"
+      "O(1) best",
+      "Then O(log n)",
+      "Then O(n)",
+      "Then O(n^2)"
     ]
   },
   {
-    question: "Explain the queue data structure and its main operations.",
+    lesson: "Lesson 3",
+    question: "Explain the stack data structure and its operations.",
     points: [
-      "Queue follows FIFO",
+      "LIFO rule",
+      "push adds an item",
+      "pop removes the top item",
+      "top returns the top item without removing it"
+    ]
+  },
+  {
+    lesson: "Lesson 3",
+    question: "Explain the queue data structure and its operations.",
+    points: [
+      "FIFO rule",
       "enqueue inserts at the back",
       "dequeue/pop removes from the front",
-      "front returns first element without removing"
+      "front returns the first item"
     ]
   },
   {
-    question: "What is traversal in a data structure?",
-    points: [
-      "Visiting elements one by one",
-      "Used to inspect or process data",
-      "Can apply to arrays and linked structures"
-    ]
-  },
-  {
+    lesson: "Lesson 3",
     question: "Why is a circular queue useful?",
     points: [
-      "Efficient array-based queue implementation",
-      "Reuses empty spaces",
-      "Avoids wasted positions at the front",
-      "Uses wrap-around logic"
+      "Reuses empty positions",
+      "Improves array-based queue efficiency",
+      "Uses wrap-around indexing"
     ]
   },
   {
-    question: "Why can linked lists be better than arrays in some cases?",
+    lesson: "Lesson 3",
+    question: "Compare stacks and queues.",
     points: [
-      "Flexible insertion and deletion",
-      "No need for contiguous memory",
-      "Good when size changes frequently",
-      "Trade-off: slower direct access"
-    ]
-  },
-  {
-    question: "What is underflow in linear data structures?",
-    points: [
-      "Removing from an empty structure",
-      "Can happen in stacks and queues",
-      "Should be handled with checks or exceptions"
-    ]
-  },
-  {
-    question: "Explain why direct indexing is fast in arrays.",
-    points: [
-      "Contiguous memory layout",
-      "Address can be computed directly",
-      "No traversal required"
+      "Stack uses LIFO",
+      "Queue uses FIFO",
+      "Insertion/removal positions differ",
+      "Use cases are different"
     ]
   }
 ];
 
-// ---------- RANDOM EXAM SETTINGS ----------
 const examConfig = {
   classicCount: 7,
   testCount: 3
