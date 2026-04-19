@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,35 +7,23 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-inner">
-      <p class="eyebrow">Data Structures & Algorithms</p>
-      <h1>Midterm Prep Hub</h1>
-      <p class="subtitle">
-        Topics, flashcards, quiz practice, and exam mode in one place.
-      </p>
-      <div class="hero-actions">
-        <button class="primary-btn" onclick="showSection('topics')">Start Studying</button>
-        <button class="secondary-btn" onclick="showSection('exam')">Try Exam Mode</button>
+  <header class="site-header">
+    <div class="brand" onclick="navigate('home')">
+      <div class="brand-badge">DSA</div>
+      <div>
+        <h1>Data Structures & Algorithms</h1>
+        <p>Ara sınav hazırlık merkezi</p>
       </div>
     </div>
+
+    <nav class="top-nav">
+      <button id="nav-home" onclick="navigate('home')">Ev</button>
+      <button id="nav-study" onclick="navigate('study')">Çalışmak</button>
+      <button id="nav-exam" onclick="navigate('exam')">Sınav</button>
+    </nav>
   </header>
 
-  <nav class="top-nav">
-    <button onclick="showSection('topics')">Topics</button>
-    <button onclick="showSection('flashcards')">Flashcards</button>
-    <button onclick="showSection('quiz')">Quiz</button>
-    <button onclick="showSection('exam')">Exam Mode</button>
-  </nav>
-
-  <main class="container">
-    <section id="stats" class="stats"></section>
-    <section id="app"></section>
-  </main>
-
-  <footer class="footer">
-    <p>Built for DSA midterm practice.</p>
-  </footer>
+  <main id="app"></main>
 
   <script src="data.js"></script>
   <script src="app.js"></script>
