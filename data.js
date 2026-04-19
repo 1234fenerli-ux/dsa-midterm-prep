@@ -1,4 +1,4 @@
-const studyLessons = [
+window.studyLessons = [
   {
     lesson: "Lesson 1",
     title: "What is an Algorithm?",
@@ -238,7 +238,7 @@ const studyLessons = [
     ]
   }
 ];
-const classicPool = [
+window.classicPool = [
   {
     lesson: "Lesson 1",
     question: "What is the difference between a data structure and an abstract data type (ADT)? Give one example of an ADT and two different data structures that can implement it.",
@@ -436,7 +436,7 @@ const classicPool = [
     ]
   }
 ];
-const mcqPool = [
+window.mcqPool = [
   {
     lesson: "Lesson 1",
     question: "Which statement best defines an algorithm?",
@@ -1186,3 +1186,7 @@ const mcqPool = [
     answer: "Its front and rear can wrap around to the beginning",
     explanation: "Wrap-around indexing is the key idea of circular queues."
   }
+window.examConfig = {
+  classicCount: 7,
+  testCount: 3
+};
