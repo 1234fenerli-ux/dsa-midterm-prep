@@ -1,12 +1,7 @@
 const app = document.getElementById("app");
 
 const state = {
-  selectedStudyIndex: 0,
-  mcqStats: {
-    correct: 0,
-    wrong: 0,
-    answered: 0
-  }
+  selectedStudyIndex: 0
 };
 
 function navigate(page) {
@@ -39,24 +34,6 @@ function renderHome() {
         <button onclick="navigate('study')" style="padding:12px 18px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;font-weight:700;">Go to Study Mode</button>
         <button onclick="navigate('exam')" style="padding:12px 18px;border:1px solid #ccc;border-radius:12px;background:#fff;cursor:pointer;font-weight:700;">Go to Exam Mode</button>
       </div>
-    </section>
-
-    <section style="max-width:1100px;margin:30px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;">
-        <div style="font-size:12px;font-weight:700;color:#8c1738;margin-bottom:10px;">STUDY</div>
-        <h3 style="margin-top:0;">Lesson-Based Notes</h3>
-        <p style="color:#666;line-height:1.6;">Study Lesson 1, Lesson 2, and Lesson 3 in a sidebar-based layout.</p>
-      </article>
-      <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;">
-        <div style="font-size:12px;font-weight:700;color:#8c1738;margin-bottom:10px;">EXAM</div>
-        <h3 style="margin-top:0;">Classic + MCQ</h3>
-        <p style="color:#666;line-height:1.6;">Practice open-ended questions and multiple-choice questions separately.</p>
-      </article>
-      <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;background:#fff8f4;">
-        <div style="font-size:12px;font-weight:700;color:#8c1738;margin-bottom:10px;">MOCK MIDTERM</div>
-        <h3 style="margin-top:0;">Randomized Each Time</h3>
-        <p style="color:#666;line-height:1.6;">Every mock exam pulls 7 classic and 3 test questions from the pool.</p>
-      </article>
     </section>
   `;
 }
@@ -146,141 +123,9 @@ function renderExamMenu() {
 }
 
 function openExam(id) {
-  if (id === "mcq-all") renderMCQ();
-  else if (id === "classic-all") renderClassic();
+  if (id === "mcq-all") renderMCQSingleFlow();
+  else if (id === "classic-all") renderClassicSingleFlow();
   else if (id === "mock-midterm") renderMock();
-}
-
-function renderMCQ() {
-  const list = window.mcqPool || [];
-  state.mcqStats = { correct: 0, wrong: 0, answered: 0 };
-
-  if (!list.length) {
-    app.innerHTML = `<section style="max-width:900px;margin:60px auto;"><h2>No MCQ questions found</h2></section>`;
-    return;
-  }
-
-  app.innerHTML = `
-    <section style="max-width:900px;margin:40px auto;">
-      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;">
-        <h2 style="margin:0;">Multiple Choice</h2>
-        <div id="mcq-stats" style="display:flex;gap:10px;flex-wrap:wrap;">
-          ${renderMCQStats()}
-        </div>
-      </div>
-
-      ${list.map((q, i) => `
-        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;margin-bottom:18px;">
-          <div style="color:#888;font-size:13px;font-weight:700;">${q.lesson}</div>
-          <h3>${q.question}</h3>
-          <div style="display:grid;gap:10px;">
-            ${q.options.map(opt => `
-              <button onclick="checkMCQ(${i}, '${escapeQuotes(opt)}')" id="mcq-${i}-${safeId(opt)}"
-                style="text-align:left;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;cursor:pointer;">
-                ${opt}
-              </button>
-            `).join("")}
-          </div>
-
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button onclick="toggleMCQAnswer(${i})" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
-              Show / Hide Answer
-            </button>
-          </div>
-
-          <div id="answerbox-${i}" style="display:none;margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fafafa;">
-            <strong>Correct answer:</strong> ${q.answer}<br>
-            <span>${q.explanation}</span>
-          </div>
-
-          <div id="feedback-${i}" style="margin-top:12px;"></div>
-        </article>
-      `).join("")}
-    </section>
-  `;
-}
-
-function renderMCQStats() {
-  return `
-    <div style="padding:8px 12px;border-radius:999px;background:#f3f3f5;">Answered: <strong>${state.mcqStats.answered}</strong></div>
-    <div style="padding:8px 12px;border-radius:999px;background:#eef8f1;">Correct: <strong>${state.mcqStats.correct}</strong></div>
-    <div style="padding:8px 12px;border-radius:999px;background:#fff0f0;">Wrong: <strong>${state.mcqStats.wrong}</strong></div>
-  `;
-}
-
-function updateMCQStats() {
-  const el = document.getElementById("mcq-stats");
-  if (el) el.innerHTML = renderMCQStats();
-}
-
-function toggleMCQAnswer(index) {
-  const box = document.getElementById(`answerbox-${index}`);
-  if (!box) return;
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-function checkMCQ(index, selected) {
-  const q = window.mcqPool[index];
-  const feedback = document.getElementById(`feedback-${index}`);
-  if (feedback.dataset.done === "1") return;
-  feedback.dataset.done = "1";
-
-  q.options.forEach(opt => {
-    const btn = document.getElementById(`mcq-${index}-${safeId(opt)}`);
-    if (!btn) return;
-    btn.disabled = true;
-    if (opt === q.answer) btn.style.background = "#e8f7ee";
-    if (opt === selected && opt !== q.answer) btn.style.background = "#fdecec";
-  });
-
-  state.mcqStats.answered += 1;
-  if (selected === q.answer) state.mcqStats.correct += 1;
-  else state.mcqStats.wrong += 1;
-  updateMCQStats();
-
-  feedback.innerHTML = selected === q.answer
-    ? `<div style="padding:12px;border:1px solid #cde8d5;border-radius:12px;background:#f3fbf5;">Correct. ${q.explanation}</div>`
-    : `<div style="padding:12px;border:1px solid #f0caca;border-radius:12px;background:#fff5f5;">Wrong. Correct answer: <strong>${q.answer}</strong>. ${q.explanation}</div>`;
-}
-
-function renderClassic() {
-  const list = window.classicPool || [];
-  if (!list.length) {
-    app.innerHTML = `<section style="max-width:900px;margin:60px auto;"><h2>No classic questions found</h2></section>`;
-    return;
-  }
-
-  app.innerHTML = `
-    <section style="max-width:900px;margin:40px auto;">
-      <h2>Classic Questions</h2>
-      ${list.map((q, i) => `
-        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;margin-bottom:18px;">
-          <div style="color:#888;font-size:13px;font-weight:700;">${q.lesson}</div>
-          <h3>${q.question}</h3>
-          <textarea placeholder="Write your answer here..." style="width:100%;min-height:120px;margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:12px;"></textarea>
-
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button onclick="toggleClassicAnswer(${i})" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
-              Show / Hide Answer Guide
-            </button>
-          </div>
-
-          <div id="classic-answer-${i}" style="display:none;margin-top:14px;padding:14px;border:1px solid #ddd;border-radius:12px;background:#fafafa;">
-            <strong>Expected key points</strong>
-            <ul>
-              ${q.points.map(point => `<li>${point}</li>`).join("")}
-            </ul>
-          </div>
-        </article>
-      `).join("")}
-    </section>
-  `;
-}
-
-function toggleClassicAnswer(index) {
-  const box = document.getElementById(`classic-answer-${index}`);
-  if (!box) return;
-  box.style.display = box.style.display === "none" ? "block" : "block" ? (box.style.display === "block" ? "none" : "block") : "none";
 }
 
 function shuffleArray(arr) {
@@ -290,6 +135,258 @@ function shuffleArray(arr) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
+}
+
+function renderMCQSingleFlow() {
+  const questions = [...(window.mcqPool || [])];
+  if (!questions.length) {
+    app.innerHTML = `<section style="max-width:900px;margin:60px auto;"><h2>No MCQ questions found</h2></section>`;
+    return;
+  }
+
+  let current = 0;
+  let correct = 0;
+  let wrong = 0;
+  let locked = false;
+
+  function draw() {
+    const q = questions[current];
+    const progress = Math.round((current / questions.length) * 100);
+
+    app.innerHTML = `
+      <section style="max-width:900px;margin:40px auto;">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+          <div>
+            <h2 style="margin:0;">Multiple Choice</h2>
+            <p style="margin:8px 0 0;color:#666;">Question ${current + 1} / ${questions.length}</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div style="padding:10px 14px;border-radius:12px;background:#eef8f1;border:1px solid #d6ebdc;">Correct: <strong>${correct}</strong></div>
+            <div style="padding:10px 14px;border-radius:12px;background:#fff0f0;border:1px solid #f1d2d2;">Wrong: <strong>${wrong}</strong></div>
+          </div>
+        </div>
+
+        <div style="height:12px;background:#ece8eb;border-radius:999px;overflow:hidden;margin-bottom:18px;">
+          <div style="height:100%;width:${progress}%;background:#8c1738;"></div>
+        </div>
+
+        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;">
+          <div style="color:#888;font-size:13px;font-weight:700;">${q.lesson}</div>
+          <h3>${q.question}</h3>
+
+          <div style="display:grid;gap:10px;margin-top:14px;">
+            ${q.options.map(opt => `
+              <button onclick="answerMCQSingle('${escapeQuotes(opt)}')" id="mcq-opt-${safeId(opt)}"
+                style="text-align:left;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;cursor:pointer;">
+                ${opt}
+              </button>
+            `).join("")}
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="toggleSingleMCQAnswer()" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
+              Show / Hide Answer
+            </button>
+          </div>
+
+          <div id="single-mcq-answer" style="display:none;margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fafafa;">
+            <strong>Correct answer:</strong> ${q.answer}<br>
+            <span>${q.explanation}</span>
+          </div>
+
+          <div id="single-mcq-feedback" style="margin-top:12px;"></div>
+
+          <div style="margin-top:16px;">
+            <button id="single-mcq-next" onclick="nextMCQSingle()" style="display:none;padding:10px 14px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;">
+              Next Question
+            </button>
+          </div>
+        </article>
+      </section>
+    `;
+
+    locked = false;
+  }
+
+  window.toggleSingleMCQAnswer = function() {
+    const box = document.getElementById("single-mcq-answer");
+    if (!box) return;
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  };
+
+  window.answerMCQSingle = function(selected) {
+    if (locked) return;
+    locked = true;
+
+    const q = questions[current];
+    const feedback = document.getElementById("single-mcq-feedback");
+
+    q.options.forEach(opt => {
+      const btn = document.getElementById(`mcq-opt-${safeId(opt)}`);
+      if (!btn) return;
+      btn.disabled = true;
+      if (opt === q.answer) btn.style.background = "#e8f7ee";
+      if (opt === selected && opt !== q.answer) btn.style.background = "#fdecec";
+    });
+
+    if (selected === q.answer) {
+      correct++;
+      feedback.innerHTML = `<div style="padding:12px;border:1px solid #cde8d5;border-radius:12px;background:#f3fbf5;">Correct. ${q.explanation}</div>`;
+    } else {
+      wrong++;
+      feedback.innerHTML = `<div style="padding:12px;border:1px solid #f0caca;border-radius:12px;background:#fff5f5;">Wrong. Correct answer: <strong>${q.answer}</strong>. ${q.explanation}</div>`;
+    }
+
+    document.getElementById("single-mcq-next").style.display = "inline-block";
+  };
+
+  window.nextMCQSingle = function() {
+    current++;
+    if (current < questions.length) draw();
+    else finish();
+  };
+
+  function finish() {
+    const total = questions.length;
+    const percent = Math.round((correct / total) * 100);
+
+    app.innerHTML = `
+      <section style="max-width:900px;margin:60px auto;">
+        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:30px;text-align:center;">
+          <h2 style="margin-top:0;">Multiple Choice Complete</h2>
+          <p style="font-size:34px;font-weight:700;color:#8c1738;margin:12px 0;">${correct} / ${total}</p>
+          <p style="color:#666;">Final score</p>
+
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;text-align:left;">
+            <div style="padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;">
+              <strong>Correct</strong>
+              <div style="font-size:24px;margin-top:6px;">${correct}</div>
+            </div>
+            <div style="padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;">
+              <strong>Wrong</strong>
+              <div style="font-size:24px;margin-top:6px;">${wrong}</div>
+            </div>
+            <div style="padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;">
+              <strong>Success</strong>
+              <div style="font-size:24px;margin-top:6px;">${percent}%</div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button onclick="renderMCQSingleFlow()" style="padding:12px 18px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;font-weight:700;">
+              Retry
+            </button>
+            <button onclick="navigate('exam')" style="padding:12px 18px;border:1px solid #ccc;border-radius:12px;background:#fff;cursor:pointer;font-weight:700;">
+              Back to Exam
+            </button>
+          </div>
+        </article>
+      </section>
+    `;
+  }
+
+  draw();
+}
+
+function renderClassicSingleFlow() {
+  const questions = [...(window.classicPool || [])];
+  if (!questions.length) {
+    app.innerHTML = `<section style="max-width:900px;margin:60px auto;"><h2>No classic questions found</h2></section>`;
+    return;
+  }
+
+  let current = 0;
+  const writtenAnswers = [];
+
+  function draw() {
+    const q = questions[current];
+    const progress = Math.round((current / questions.length) * 100);
+
+    app.innerHTML = `
+      <section style="max-width:900px;margin:40px auto;">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+          <div>
+            <h2 style="margin:0;">Classic Questions</h2>
+            <p style="margin:8px 0 0;color:#666;">Question ${current + 1} / ${questions.length}</p>
+          </div>
+          <div style="padding:10px 14px;border-radius:12px;background:#fff;border:1px solid #ddd;">
+            Written: <strong>${writtenAnswers.filter(x => x && x.length > 0).length}</strong>
+          </div>
+        </div>
+
+        <div style="height:12px;background:#ece8eb;border-radius:999px;overflow:hidden;margin-bottom:18px;">
+          <div style="height:100%;width:${progress}%;background:#8c1738;"></div>
+        </div>
+
+        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;">
+          <div style="color:#888;font-size:13px;font-weight:700;">${q.lesson}</div>
+          <h3>${q.question}</h3>
+
+          <textarea id="classic-flow-box" placeholder="Write your answer here..." style="width:100%;min-height:160px;margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:12px;"></textarea>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="toggleClassicFlowGuide()" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
+              Show / Hide Answer Guide
+            </button>
+          </div>
+
+          <div id="classic-flow-guide" style="display:none;margin-top:14px;padding:14px;border:1px solid #ddd;border-radius:12px;background:#fafafa;">
+            <strong>Expected key points</strong>
+            <ul>
+              ${q.points.map(point => `<li>${point}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div style="margin-top:16px;">
+            <button onclick="nextClassicFlow()" style="padding:10px 14px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;">
+              Next Question
+            </button>
+          </div>
+        </article>
+      </section>
+    `;
+  }
+
+  window.toggleClassicFlowGuide = function() {
+    const box = document.getElementById("classic-flow-guide");
+    if (!box) return;
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  };
+
+  window.nextClassicFlow = function() {
+    const val = document.getElementById("classic-flow-box")?.value.trim() || "";
+    writtenAnswers[current] = val;
+
+    current++;
+    if (current < questions.length) draw();
+    else finish();
+  };
+
+  function finish() {
+    const total = questions.length;
+    const completed = writtenAnswers.filter(x => x && x.length > 0).length;
+
+    app.innerHTML = `
+      <section style="max-width:900px;margin:60px auto;">
+        <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:30px;text-align:center;">
+          <h2 style="margin-top:0;">Classic Questions Complete</h2>
+          <p style="font-size:34px;font-weight:700;color:#8c1738;margin:12px 0;">${completed} / ${total}</p>
+          <p style="color:#666;">Questions answered</p>
+
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button onclick="renderClassicSingleFlow()" style="padding:12px 18px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;font-weight:700;">
+              Retry
+            </button>
+            <button onclick="navigate('exam')" style="padding:12px 18px;border:1px solid #ccc;border-radius:12px;background:#fff;cursor:pointer;font-weight:700;">
+              Back to Exam
+            </button>
+          </div>
+        </article>
+      </section>
+    `;
+  }
+
+  draw();
 }
 
 function renderMock() {
@@ -305,7 +402,8 @@ function renderMock() {
   let score = 0;
   let timer = 15 * 60;
   let intervalId = null;
-  const savedClassicAnswers = [];
+  const writtenAnswers = [];
+  let locked = false;
 
   function startTimer() {
     intervalId = setInterval(() => {
@@ -323,7 +421,7 @@ function renderMock() {
     const q = questions[current];
     if (!q) return;
 
-    const progressPercent = Math.round((current / questions.length) * 100);
+    const progress = Math.round((current / questions.length) * 100);
 
     app.innerHTML = `
       <section style="max-width:900px;margin:40px auto;">
@@ -339,7 +437,7 @@ function renderMock() {
         </div>
 
         <div style="height:12px;background:#ece8eb;border-radius:999px;overflow:hidden;margin-bottom:18px;">
-          <div style="height:100%;width:${progressPercent}%;background:#8c1738;"></div>
+          <div style="height:100%;width:${progress}%;background:#8c1738;"></div>
         </div>
 
         <article style="background:#fff;border:1px solid #ddd;border-radius:18px;padding:22px;">
@@ -350,13 +448,13 @@ function renderMock() {
             q.type === "mcq" ? `
               <div style="display:grid;gap:10px;margin-top:14px;">
                 ${q.options.map(opt => `
-                  <button onclick="answerMock('${escapeQuotes(opt)}')" style="text-align:left;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;cursor:pointer;">
+                  <button onclick="answerMock('${escapeQuotes(opt)}')" id="mock-opt-${safeId(opt)}" style="text-align:left;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;cursor:pointer;">
                     ${opt}
                   </button>
                 `).join("")}
               </div>
 
-              <div style="margin-top:14px;">
+              <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
                 <button onclick="toggleMockAnswer()" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
                   Show / Hide Answer
                 </button>
@@ -366,10 +464,18 @@ function renderMock() {
                 <strong>Correct answer:</strong> ${q.answer}<br>
                 <span>${q.explanation}</span>
               </div>
+
+              <div id="mock-feedback" style="margin-top:12px;"></div>
+
+              <div style="margin-top:16px;">
+                <button id="mock-next-btn" onclick="nextMockMCQ()" style="display:none;padding:10px 14px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;">
+                  Next Question
+                </button>
+              </div>
             ` : `
               <textarea id="mockClassicBox" placeholder="Write your answer here..." style="width:100%;min-height:140px;margin-top:14px;padding:12px;border:1px solid #ddd;border-radius:12px;"></textarea>
 
-              <div style="margin-top:14px;">
+              <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
                 <button onclick="toggleMockClassicGuide()" style="padding:9px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;">
                   Show / Hide Answer Guide
                 </button>
@@ -382,14 +488,18 @@ function renderMock() {
                 </ul>
               </div>
 
-              <button onclick="nextClassicMock()" style="margin-top:14px;padding:10px 14px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;">
-                Next Question
-              </button>
+              <div style="margin-top:16px;">
+                <button onclick="nextClassicMock()" style="padding:10px 14px;border:none;border-radius:12px;background:#8c1738;color:#fff;cursor:pointer;">
+                  Next Question
+                </button>
+              </div>
             `
           }
         </article>
       </section>
     `;
+
+    locked = false;
   }
 
   window.toggleMockAnswer = function() {
@@ -405,16 +515,39 @@ function renderMock() {
   };
 
   window.answerMock = function(selected) {
+    if (locked) return;
+    locked = true;
+
     const q = questions[current];
-    if (selected === q.answer) score++;
+    const feedback = document.getElementById("mock-feedback");
+
+    q.options.forEach(opt => {
+      const btn = document.getElementById(`mock-opt-${safeId(opt)}`);
+      if (!btn) return;
+      btn.disabled = true;
+      if (opt === q.answer) btn.style.background = "#e8f7ee";
+      if (opt === selected && opt !== q.answer) btn.style.background = "#fdecec";
+    });
+
+    if (selected === q.answer) {
+      score++;
+      feedback.innerHTML = `<div style="padding:12px;border:1px solid #cde8d5;border-radius:12px;background:#f3fbf5;">Correct. ${q.explanation}</div>`;
+    } else {
+      feedback.innerHTML = `<div style="padding:12px;border:1px solid #f0caca;border-radius:12px;background:#fff5f5;">Wrong. Correct answer: <strong>${q.answer}</strong>. ${q.explanation}</div>`;
+    }
+
+    document.getElementById("mock-next-btn").style.display = "inline-block";
+  };
+
+  window.nextMockMCQ = function() {
     current++;
     if (current < questions.length) draw();
     else finish();
   };
 
   window.nextClassicMock = function() {
-    const box = document.getElementById("mockClassicBox");
-    savedClassicAnswers.push(box ? box.value.trim() : "");
+    const val = document.getElementById("mockClassicBox")?.value.trim() || "";
+    writtenAnswers.push(val);
     current++;
     if (current < questions.length) draw();
     else finish();
@@ -423,9 +556,9 @@ function renderMock() {
   function finish() {
     if (intervalId) clearInterval(intervalId);
 
-    const totalClassicAnswered = savedClassicAnswers.filter(x => x.length > 0).length;
-    const totalClassic = cfg.classicCount;
     const totalMCQ = cfg.testCount;
+    const totalClassic = cfg.classicCount;
+    const classicAnswered = writtenAnswers.filter(x => x.length > 0).length;
     const percent = Math.round((score / totalMCQ) * 100);
 
     app.innerHTML = `
@@ -435,7 +568,7 @@ function renderMock() {
           <p style="font-size:34px;font-weight:700;color:#8c1738;margin:12px 0;">${score} / ${totalMCQ}</p>
           <p style="color:#666;">MCQ score</p>
 
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;text-align:left;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px;text-align:left;">
             <div style="padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;">
               <strong>Correct</strong>
               <div style="font-size:24px;margin-top:6px;">${score}</div>
@@ -448,11 +581,10 @@ function renderMock() {
               <strong>Success</strong>
               <div style="font-size:24px;margin-top:6px;">${percent}%</div>
             </div>
-          </div>
-
-          <div style="margin-top:18px;padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;text-align:left;">
-            <strong>Classic answers written</strong>
-            <div style="font-size:22px;margin-top:8px;">${totalClassicAnswered} / ${totalClassic}</div>
+            <div style="padding:16px;border:1px solid #ddd;border-radius:14px;background:#fafafa;">
+              <strong>Classic Written</strong>
+              <div style="font-size:24px;margin-top:6px;">${classicAnswered} / ${totalClassic}</div>
+            </div>
           </div>
 
           <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -472,6 +604,8 @@ function renderMock() {
   draw();
 }
 
+function startTimerSafe() {}
+
 function formatTime(totalSeconds) {
   const safe = Math.max(0, totalSeconds);
   const minutes = Math.floor(safe / 60);
@@ -490,9 +624,8 @@ function escapeQuotes(str) {
 window.navigate = navigate;
 window.selectStudy = selectStudy;
 window.openExam = openExam;
-window.checkMCQ = checkMCQ;
-window.toggleMCQAnswer = toggleMCQAnswer;
-window.toggleClassicAnswer = toggleClassicAnswer;
+window.renderMCQSingleFlow = renderMCQSingleFlow;
+window.renderClassicSingleFlow = renderClassicSingleFlow;
 window.renderMock = renderMock;
 
 navigate("home");
