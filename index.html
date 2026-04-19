@@ -1,76 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>DSA Midterm Prep</title>
-
-<style>
-body { font-family: Arial; text-align: center; background:#f5f5f5; }
-button { padding:10px; margin:5px; cursor:pointer; }
-.card { background:white; margin:10px auto; padding:15px; width:60%; border-radius:10px; }
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSA Midterm Prep</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Data Structures & Algorithms</p>
+      <h1>Midterm Prep Hub</h1>
+      <p class="subtitle">
+        Topics, flashcards, quiz practice, and exam mode in one place.
+      </p>
+      <div class="hero-actions">
+        <button class="primary-btn" onclick="showSection('topics')">Start Studying</button>
+        <button class="secondary-btn" onclick="showSection('exam')">Try Exam Mode</button>
+      </div>
+    </div>
+  </header>
 
-<h1>📚 DSA Midterm Prep</h1>
+  <nav class="top-nav">
+    <button onclick="showSection('topics')">Topics</button>
+    <button onclick="showSection('flashcards')">Flashcards</button>
+    <button onclick="showSection('quiz')">Quiz</button>
+    <button onclick="showSection('exam')">Exam Mode</button>
+  </nav>
 
-<div>
-<button onclick="show('topics')">Topics</button>
-<button onclick="show('quiz')">Quiz</button>
-<button onclick="show('flash')">Flashcards</button>
-</div>
+  <main class="container">
+    <section id="stats" class="stats"></section>
+    <section id="app"></section>
+  </main>
 
-<div id="app"></div>
+  <footer class="footer">
+    <p>Built for DSA midterm practice.</p>
+  </footer>
 
-<script>
-const topics = [
-{title:"Stack", content:"LIFO structure"},
-{title:"Queue", content:"FIFO structure"},
-{title:"Big-O", content:"Time complexity"}
-];
-
-const quiz = [
-{q:"Stack follows?", o:["FIFO","LIFO"], a:"LIFO"},
-{q:"Queue follows?", o:["FIFO","LIFO"], a:"FIFO"}
-];
-
-const flash = [
-{q:"LIFO", a:"Last In First Out"},
-{q:"FIFO", a:"First In First Out"}
-];
-
-function show(type){
-if(type==="topics"){
-app.innerHTML = topics.map(t =>
-`<div class="card"><h3>${t.title}</h3><p>${t.content}</p></div>`
-).join("");
-}
-
-if(type==="quiz"){
-app.innerHTML = quiz.map((q,i)=>
-`<div class="card">
-<p>${q.q}</p>
-${q.o.map(o=>`<button onclick="check(${i},'${o}')">${o}</button>`).join("")}
-</div>`
-).join("");
-}
-
-if(type==="flash"){
-app.innerHTML = flash.map(f =>
-`<div class="card" onclick="this.innerHTML='<p>${f.a}</p>'">
-<p>${f.q}</p>
-</div>`
-).join("");
-}
-}
-
-function check(i,ans){
-alert(ans===quiz[i].a ? "Correct!" : "Wrong!");
-}
-
-show("topics");
-</script>
-
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
